@@ -1,0 +1,59 @@
+﻿JuggleBall - Integración rápida
+
+---
+
+1. COPIAR
+
+Copia la carpeta:
+
+    src/
+
+a tu proyecto web manteniendo sus archivos juntos.
+
+2. IMPORTAR
+
+En el módulo JavaScript desde el que controlas la carga de tu página:
+
+    import { JuggleBall } from "./src/JuggleBall.js";
+
+Ajusta la ruta si colocaste src/ en otra ubicación.
+
+3. INICIAR JUGGLEBALL
+
+Antes de comenzar el proceso que quieres cubrir con el minijuego:
+
+    const game = new JuggleBall();
+    game.start();
+
+Desde ese momento JuggleBall aparecerá como overlay sobre la página.
+
+4. DETENERLO CUANDO TERMINE LA CARGA
+
+JuggleBall no sabe cuándo terminó de cargar tu aplicación. Debes detenerlo desde tu propio código cuando la carga haya terminado.
+
+    const game = new JuggleBall();
+    game.start();
+
+    try {
+        await loadAppData();
+    } finally {
+        game.destroy();
+    }
+
+loadAppData() es solo un ejemplo. Sustitúyelo por el proceso real de carga de tu página.
+
+Si quieres conservar la instancia para volver a mostrar JuggleBall más adelante, usa:
+
+    game.stop();
+
+en lugar de:
+
+    game.destroy();
+
+5. RESUMEN
+
+    game.start();    // mostrar/iniciar
+    game.stop();     // detener y ocultar
+    game.destroy();  // detener y retirar el canvas
+
+Importante: mientras JuggleBall está activo, su overlay captura el puntero y normalmente bloquea la interacción con el contenido situado debajo.

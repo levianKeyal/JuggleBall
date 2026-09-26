@@ -1,8 +1,8 @@
 # JuggleBall
 
-JuggleBall es un minijuego ligero para superponer sobre una pagina web mientras ocurre una carga o espera. Usa HTML5 Canvas y JavaScript nativo. No requiere Unity, frameworks, bundlers ni dependencias de runtime.
+JuggleBall es un minijuego ligero para superponer sobre una página web mientras ocurre una carga o espera. Usa HTML5 Canvas y JavaScript nativo. No requiere Unity, frameworks ni dependencias de runtime.
 
-El integrador decide cuando iniciar, detener o destruir el overlay.
+El sitio integrador decide cuándo iniciar, detener o destruir el overlay.
 
 ## Estructura
 
@@ -16,35 +16,59 @@ demo/
   index.html
   style.css
 README.md
+QuickIntegration.txt
 ```
-
 
 ## Ejecutar la demo
 
-Por usar modulos ES, abre la demo desde un servidor local:
+Por usar ES Modules, abre la demo desde un servidor local:
 
 ```bash
 npx serve .
 ```
 
-Despues visita `http://localhost:3000/demo/` con la barra final.
-
-Tambien puedes usar cualquier servidor estatico equivalente.
+Después visita `http://localhost:3000/demo/` con la barra final.
 
 ## Archivos para integrar
 
-Copia la carpeta `src/` o sirve esos archivos desde tu proyecto. La clase publica vive en `src/JuggleBall.js`.
+Copia la carpeta `src/` a tu proyecto web y conserva sus archivos juntos:
 
-```html
-<script type="module">
-    import { JuggleBall } from "./src/JuggleBall.js";
-
-    const game = new JuggleBall();
-    game.start();
-</script>
+```text
+src/
+  JuggleBall.js
+  ball.js
+  input.js
+  player.js
 ```
 
-## API publica
+`JuggleBall.js` importa los otros módulos mediante rutas relativas, por eso esa estructura debe mantenerse.
+
+```js
+import { JuggleBall } from "./src/JuggleBall.js";
+```
+
+La ruta anterior es solo un ejemplo. Ajústala según la ubicación donde copies `src/` dentro de tu proyecto.
+
+## Integración mínima
+
+```js
+import { JuggleBall } from "./src/JuggleBall.js";
+
+const game = new JuggleBall();
+game.start();
+
+try {
+    await loadAppData();
+} finally {
+    game.destroy();
+}
+```
+
+`loadAppData()` representa el proceso real de carga de tu aplicación. No es una función proporcionada por JuggleBall.
+
+JuggleBall no detecta cuándo terminó de cargar tu página o aplicación. Tu sitio debe llamar `game.stop()` o `game.destroy()` cuando su proceso de carga haya terminado.
+
+## API pública
 
 ```js
 const game = new JuggleBall();
@@ -54,17 +78,17 @@ game.stop();
 game.destroy();
 ```
 
-`start()` crea el canvas si aun no existe, lo muestra como overlay, registra los listeners necesarios, reinicia el estado de juego y arranca `requestAnimationFrame`. Llamarlo dos veces seguidas no crea loops duplicados.
+`start()` inicia o reactiva JuggleBall, crea el canvas si hace falta, registra los listeners necesarios y arranca `requestAnimationFrame`. Si se llama dos veces seguidas, evita crear loops duplicados.
 
-`stop()` cancela el loop, retira listeners de pointer y resize, oculta el canvas y desactiva sus Pointer Events para no bloquear la pagina. Puedes llamar `start()` despues de `stop()`.
+`stop()` detiene y oculta JuggleBall, remueve listeners activos y permite llamar `start()` posteriormente en la misma instancia.
 
-`destroy()` llama internamente a `stop()`, remueve el canvas creado por JuggleBall y libera referencias razonables.
+`destroy()` detiene JuggleBall, elimina el canvas y limpia sus referencias internas. La implementación actual permite volver a llamar `start()` en la misma instancia después de `destroy()`, recreando el canvas y el estado necesario.
 
 ## Overlay
 
-JuggleBall crea un `<canvas>` con posicion `fixed`, cubriendo el viewport. Mientras esta activo usa `pointer-events: auto` para recibir Pointer Events y bloquea normalmente la interaccion con el contenido situado debajo. Cuando esta detenido usa `pointer-events: none`.
+JuggleBall crea un `<canvas>` con posición `fixed`, cubriendo el viewport. Mientras está activo usa `pointer-events: auto` para recibir Pointer Events y normalmente bloquea la interacción con el contenido situado debajo. Cuando está detenido usa `pointer-events: none`.
 
-Por defecto usa un `z-index` alto para quedar por encima de la pagina. Puedes ajustarlo:
+Por defecto usa un `z-index` alto. Puedes ajustarlo si tu página ya tiene overlays, modales o headers con valores altos:
 
 ```js
 const game = new JuggleBall({
@@ -72,35 +96,17 @@ const game = new JuggleBall({
 });
 ```
 
-Si tu pagina ya usa overlays, modales o headers con z-index alto, elige un valor que encaje con tu stack visual.
-
 ## Resize y Pointer Events
 
-El componente escucha `resize` solo mientras esta activo y ajusta el canvas al viewport. El control del player usa Pointer Events sobre el canvas; navegadores modernos de escritorio y movil soportan este modelo.
+El componente escucha `resize` solo mientras está activo y ajusta el canvas al viewport. El control del player usa Pointer Events sobre el canvas.
 
-## Detener al terminar la carga
+## Sin dependencias de runtime
 
-Cuando tu pagina termina de cargar o el proceso que estabas esperando concluye, llama `stop()` si quieres poder volver a usar JuggleBall mas tarde:
-
-```js
-const game = new JuggleBall();
-game.start();
-
-loadAppData().finally(() => {
-    game.stop();
-});
-```
-
-Si ya no lo vas a necesitar, llama `destroy()`:
-
-```js
-loadAppData().finally(() => {
-    game.destroy();
-});
-```
-
-El integrador es responsable de llamar `stop()` o `destroy()` cuando corresponda.
-
-## Compatibilidad
-
-JuggleBall espera navegadores modernos con soporte de ES modules, Canvas, Pointer Events y `requestAnimationFrame`.
+- JavaScript nativo
+- HTML5 Canvas
+- ES Modules
+- Pointer Events
+- `requestAnimationFrame`
+- Sin Unity
+- Sin frameworks
+- Sin bundler obligatorio
