@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JuggleBall Demo</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <main class="demo-page">
+        <section class="demo-panel" aria-label="Demo de integracion">
+            <h1 class="demo-title">JuggleBall</h1>
+            <p class="demo-copy">
+                Demo minima de integracion sobre contenido web normal.
+            </p>
+
+        </section>
+    </main>
+    <div class="demo-actions demo-controls" aria-label="Controles de demo">
+        <button class="demo-button" type="button" data-action="start">Start</button>
+        <button class="demo-button" type="button" data-action="stop">Stop</button>
+        <button class="demo-button" type="button" data-action="destroy">Destroy</button>
+    </div>
+    <script type="module">
+        import { JuggleBall } from "../src/JuggleBall.js";
+
+        const controls = document.querySelector(".demo-controls");
+
+        let game = null;
+
+        function keepDemoControlsAboveOverlay() {
+            document.body.appendChild(controls);
+        }
+
+        function startGame() {
+            if (!game) {
+                game = new JuggleBall();
+            }
+            game.start();
+            keepDemoControlsAboveOverlay();
+        }
+
+        startGame();
+
+        document.querySelector("[data-action='start']").addEventListener("click", () => {
+            startGame();
+        });
+
+        document.querySelector("[data-action='stop']").addEventListener("click", () => {
+            game?.stop();
+        });
+
+        document.querySelector("[data-action='destroy']").addEventListener("click", () => {
+            game?.destroy();
+            game = null;
+        });
+    </script>
+</body>
+</html>
