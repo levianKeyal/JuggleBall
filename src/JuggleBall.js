@@ -7,6 +7,7 @@ export class JuggleBall {
         this.parent = options.parent || document.body;
         this.zIndex = options.zIndex ?? 2147483000;
         this.className = options.className || "juggle-ball-overlay";
+        this.touchOffsetY = options.touchOffsetY ?? 80;
 
         this.canvas = null;
         this.context = null;
@@ -42,7 +43,7 @@ export class JuggleBall {
         this.previousTime = 0;
         this.input = new InputController(this.canvas);
         this.input.attach();
-        this.player = new Player(this.input);
+        this.player = new Player(this.input, { touchOffsetY: this.touchOffsetY });
         this.ball = new Ball(this.canvas);
 
         window.addEventListener("resize", this.resizeCanvas);
