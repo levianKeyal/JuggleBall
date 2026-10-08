@@ -1,6 +1,7 @@
 ﻿export class Player {
-    constructor(input) {
+    constructor(input, options = {}) {
         this.input = input;
+        this.touchOffsetY = options.touchOffsetY ?? 80;
 
         this.x = 0;
         this.y = 0;
@@ -16,11 +17,14 @@
             return;
         }
 
+        const offsetY = this.input.pointerType === "touch" ? this.touchOffsetY : 0;
+        const targetX = this.input.x;
+        const targetY = this.input.y - offsetY;
         const newSession = this.pointerSession !== this.input.pointerSession;
-        this.previousX = newSession ? this.input.x : this.x;
-        this.previousY = newSession ? this.input.y : this.y;
-        this.x = this.input.x;
-        this.y = this.input.y;
+        this.previousX = newSession ? targetX : this.x;
+        this.previousY = newSession ? targetY : this.y;
+        this.x = targetX;
+        this.y = targetY;
         this.pointerSession = this.input.pointerSession;
     }
 
