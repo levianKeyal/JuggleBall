@@ -29,17 +29,24 @@
         const minY = this.radius;
         const maxY = Math.max(minY, canvas.height - this.radius - scoreSpace);
         const newSession = this.pointerSession !== this.input.pointerSession;
-        // Al iniciar el contacto, colocar la raqueta con su offset habitual.
-        // Despues, usar deltas del puntero para evitar la zona muerta al
-        // invertir el movimiento cuando la raqueta esta contra un borde.
-        const desiredX = newSession
-            ? this.input.x
-            : this.x + (this.input.x - this.lastPointerX);
-        const desiredY = newSession
-            ? this.input.y - offsetY
-            : this.y + (this.input.y - this.lastPointerY);
-        const targetX = Math.max(minX, Math.min(maxX, desiredX));
-        const targetY = Math.max(minY, Math.min(maxY, desiredY));
+        // Seguir el dedo con offset constante siempre que sea posible.
+        // Si el dedo sobrepasa un borde, mover la raqueta inmediatamente
+        // al invertir el gesto y recuperar suavemente el offset deseado.
+        const deltaX = this.input.x - this.lastPointerX;
+        const deltaY = this.input.y - this.lastPointerY;
+        const idealX = this.input.x;
+        const idealY = this.input.y - offsetY;
+        const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+        let targetX = clamp(idealX, minX, maxX);
+        let targetY = clamp(idealY, minY, maxY);
+        if (!newSession) {
+            const relativeX = clamp(this.x + deltaX, minX, maxX);
+            const relativeY = clamp(this.y + deltaY, minY, maxY);
+            // Cuando el puntero esta fuera de los limites, el movimiento
+            // relativo evita una zona muerta al invertir la direccion.
+            if (idealX < minX || idealX > maxX) targetX = relativeX;
+            if (idealY < minY || idealY > maxY) targetY = relativeY;
+        }
         this.previousX = newSession ? targetX : this.x;
         this.previousY = newSession ? targetY : this.y;
         this.x = targetX;
