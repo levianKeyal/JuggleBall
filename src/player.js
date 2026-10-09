@@ -9,6 +9,8 @@
         this.previousX = 0;
         this.previousY = 0;
         this.pointerSession = -1;
+        this.lastPointerX = 0;
+        this.lastPointerY = 0;
         this.radius = 20;
     }
 
@@ -26,13 +28,24 @@
         const maxX = Math.max(minX, canvas.width - this.radius);
         const minY = this.radius;
         const maxY = Math.max(minY, canvas.height - this.radius - scoreSpace);
-        const targetX = Math.max(minX, Math.min(maxX, this.input.x));
-        const targetY = Math.max(minY, Math.min(maxY, this.input.y - offsetY));
         const newSession = this.pointerSession !== this.input.pointerSession;
+        // Al iniciar el contacto, colocar la raqueta con su offset habitual.
+        // Despues, usar deltas del puntero para evitar la zona muerta al
+        // invertir el movimiento cuando la raqueta esta contra un borde.
+        const desiredX = newSession
+            ? this.input.x
+            : this.x + (this.input.x - this.lastPointerX);
+        const desiredY = newSession
+            ? this.input.y - offsetY
+            : this.y + (this.input.y - this.lastPointerY);
+        const targetX = Math.max(minX, Math.min(maxX, desiredX));
+        const targetY = Math.max(minY, Math.min(maxY, desiredY));
         this.previousX = newSession ? targetX : this.x;
         this.previousY = newSession ? targetY : this.y;
         this.x = targetX;
         this.y = targetY;
+        this.lastPointerX = this.input.x;
+        this.lastPointerY = this.input.y;
         this.pointerSession = this.input.pointerSession;
     }
 
