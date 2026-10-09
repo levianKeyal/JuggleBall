@@ -1,35 +1,34 @@
-﻿JuggleBall - Integración rápida
+JuggleBall - Integración rápida y actualización (versión de main)
 
----
+1. INSTALACIÓN O ACTUALIZACIÓN
 
-1. COPIAR
+Copia o reemplaza la carpeta src/ completa, manteniendo estos cuatro archivos juntos:
 
-Copia la carpeta:
+    src/JuggleBall.js
+    src/input.js
+    src/player.js
+    src/ball.js
 
-    src/
+Si ya integraste la primera versión, REEMPLAZA LOS CUATRO ARCHIVOS.
+No basta con cambiar solo JuggleBall.js.
 
-a tu proyecto web manteniendo sus archivos juntos.
+2. IMPORTAR Y MOSTRAR
 
-2. IMPORTAR
-
-En el módulo JavaScript desde el que controlas la carga de tu página:
+En un módulo JavaScript de tu aplicación (ajusta la ruta):
 
     import { JuggleBall } from "./src/JuggleBall.js";
 
-Ajusta la ruta si colocaste src/ en otra ubicación.
+    const game = new JuggleBall({
+        touchOffsetY: 110 // Opcional: valor predeterminado
+    });
 
-3. INICIAR JUGGLEBALL
-
-Antes de comenzar el proceso que quieres cubrir con el minijuego:
-
-    const game = new JuggleBall();
     game.start();
 
-Desde ese momento JuggleBall aparecerá como overlay sobre la página.
+El offset se aplica solo en pantallas táctiles: la raqueta se dibuja por encima del dedo. Con mouse no se aplica offset. Cerca de los bordes la raqueta se limita al área visible.
 
-4. DETENERLO CUANDO TERMINE LA CARGA
+3. OCULTAR AL TERMINAR LA CARGA
 
-JuggleBall no sabe cuándo terminó de cargar tu aplicación. Debes detenerlo desde tu propio código cuando la carga haya terminado.
+El sitio debe decidir cuándo termina la operación. Ejemplo dentro de una función async:
 
     const game = new JuggleBall();
     game.start();
@@ -40,20 +39,35 @@ JuggleBall no sabe cuándo terminó de cargar tu aplicación. Debes detenerlo de
         game.destroy();
     }
 
-loadAppData() es solo un ejemplo. Sustitúyelo por el proceso real de carga de tu página.
+loadAppData() es un ejemplo, NO una función del juego.
+Si deseas reutilizar la misma instancia más tarde, usa game.stop() en vez de game.destroy().
 
-Si quieres conservar la instancia para volver a mostrar JuggleBall más adelante, usa:
-
-    game.stop();
-
-en lugar de:
-
-    game.destroy();
-
-5. RESUMEN
+4. API
 
     game.start();    // mostrar/iniciar
     game.stop();     // detener y ocultar
-    game.destroy();  // detener y retirar el canvas
+    game.destroy();  // detener y eliminar el Canvas
 
-Importante: mientras JuggleBall está activo, su overlay captura el puntero y normalmente bloquea la interacción con el contenido situado debajo.
+La API pública no cambió respecto de la primera versión.
+
+5. PUBLICACIÓN Y CACHÉ
+
+Al desplegar la actualización, asegúrate de que el navegador reciba los cuatro archivos nuevos.
+Si usas bundler, utiliza su versionado/hash de assets. Si sirves ES Modules directamente,
+invalida la caché del módulo principal Y sus dependencias (input.js, player.js, ball.js).
+Cambiar solo la URL del HTML no garantiza renovar los módulos.
+
+El importmap con ?v=... de demo/index.html es específico de la demo;
+NO se copia automáticamente al instalar src/ en otra web.
+
+6. PRUEBAS ANTES DE ENTREGAR
+
+- Desktop: mouse, colisiones, puntuación, Start/Stop/Destroy.
+- Android real: movimiento táctil, separación dedo/raqueta, límites del Canvas,
+  rebotes, puntuación y desaparición del overlay al terminar la espera.
+- Confirmar que no hay errores de importación ni código antiguo en caché.
+
+IMPORTANTE: el Canvas es un overlay de pantalla completa que captura el puntero
+mientras está activo y normalmente bloquea la interacción con la página debajo.
+
+Para documentación detallada, consultar README.md.
