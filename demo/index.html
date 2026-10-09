@@ -21,6 +21,17 @@
         <button class="demo-button" type="button" data-action="stop">Stop</button>
         <button class="demo-button" type="button" data-action="destroy">Destroy</button>
     </div>
+    <!-- Actualizar el sufijo v en las cuatro rutas al publicar una prueba nueva. -->
+    <script type="importmap">
+    {
+        "imports": {
+            "../src/JuggleBall.js": "../src/JuggleBall.js?v=20261008-1",
+            "../src/input.js": "../src/input.js?v=20261008-1",
+            "../src/player.js": "../src/player.js?v=20261008-1",
+            "../src/ball.js": "../src/ball.js?v=20261008-1"
+        }
+    }
+    </script>
     <script type="module">
         import { JuggleBall } from "../src/JuggleBall.js";
 
@@ -59,7 +70,7 @@
                 const fingerY = rect.top + game.input.y * scaleY;
                 const paddleY = rect.top + game.player.y * scaleY;
                 const distance = fingerY - paddleY;
-                debug.textContent = "Dedo Y: " + fingerY.toFixed(1)
+                debug.textContent = "Version: 20261008-1" + "\nDedo Y: " + fingerY.toFixed(1)
                     + "\nRaqueta Y: " + paddleY.toFixed(1)
                     + "\nDistancia: " + distance.toFixed(1) + " px"
                     + "\nEscala Y: " + scaleY.toFixed(3)
