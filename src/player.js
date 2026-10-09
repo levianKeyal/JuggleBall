@@ -18,8 +18,16 @@
         }
 
         const offsetY = this.input.pointerType === "touch" ? this.touchOffsetY : 0;
-        const targetX = this.input.x;
-        const targetY = this.input.y - offsetY;
+        // Mantener la raqueta y el marcador visibles dentro del canvas.
+        // La misma posicion limitada se utiliza para dibujo y colisiones.
+        const canvas = this.input.canvas;
+        const scoreSpace = 32;
+        const minX = this.radius;
+        const maxX = Math.max(minX, canvas.width - this.radius);
+        const minY = this.radius;
+        const maxY = Math.max(minY, canvas.height - this.radius - scoreSpace);
+        const targetX = Math.max(minX, Math.min(maxX, this.input.x));
+        const targetY = Math.max(minY, Math.min(maxY, this.input.y - offsetY));
         const newSession = this.pointerSession !== this.input.pointerSession;
         this.previousX = newSession ? targetX : this.x;
         this.previousY = newSession ? targetY : this.y;
