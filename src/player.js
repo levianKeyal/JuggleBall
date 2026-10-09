@@ -9,8 +9,6 @@
         this.previousX = 0;
         this.previousY = 0;
         this.pointerSession = -1;
-        this.lastPointerX = 0;
-        this.lastPointerY = 0;
         this.radius = 20;
     }
 
@@ -32,27 +30,17 @@
         // Seguir el dedo con offset constante siempre que sea posible.
         // Si el dedo sobrepasa un borde, mover la raqueta inmediatamente
         // al invertir el gesto y recuperar suavemente el offset deseado.
-        const deltaX = this.input.x - this.lastPointerX;
-        const deltaY = this.input.y - this.lastPointerY;
-        const idealX = this.input.x;
-        const idealY = this.input.y - offsetY;
+        // Posicion absoluta: conservar la separacion fija del dedo.
+        // Al llegar a un borde, detener la raqueta sin acumular
+        // movimiento relativo. Al regresar, se reanuda cuando el
+        // dedo vuelve a permitir el offset solicitado.
         const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
-        let targetX = clamp(idealX, minX, maxX);
-        let targetY = clamp(idealY, minY, maxY);
-        if (!newSession) {
-            const relativeX = clamp(this.x + deltaX, minX, maxX);
-            const relativeY = clamp(this.y + deltaY, minY, maxY);
-            // Cuando el puntero esta fuera de los limites, el movimiento
-            // relativo evita una zona muerta al invertir la direccion.
-            if (idealX < minX || idealX > maxX) targetX = relativeX;
-            if (idealY < minY || idealY > maxY) targetY = relativeY;
-        }
+        const targetX = clamp(this.input.x, minX, maxX);
+        const targetY = clamp(this.input.y - offsetY, minY, maxY);
         this.previousX = newSession ? targetX : this.x;
         this.previousY = newSession ? targetY : this.y;
         this.x = targetX;
         this.y = targetY;
-        this.lastPointerX = this.input.x;
-        this.lastPointerY = this.input.y;
         this.pointerSession = this.input.pointerSession;
     }
 
