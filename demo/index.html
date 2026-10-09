@@ -42,6 +42,35 @@
 
         startGame();
 
+        // Diagnostico temporal: compara el dedo y la raqueta en pixeles CSS.
+        const debug = document.createElement("pre");
+        debug.setAttribute("aria-label", "Diagnostico tactil");
+        Object.assign(debug.style, {
+            position: "fixed", left: "8px", bottom: "8px", zIndex: "2147483002",
+            background: "rgba(0,0,0,.85)", color: "#fff", padding: "8px",
+            font: "12px monospace", pointerEvents: "none", margin: "0",
+            whiteSpace: "pre-wrap"
+        });
+        document.body.appendChild(debug);
+        function updateDebug() {
+            if (game?.running && game.input?.active && game.player) {
+                const rect = game.canvas.getBoundingClientRect();
+                const scaleY = rect.height / game.canvas.height;
+                const fingerY = rect.top + game.input.y * scaleY;
+                const paddleY = rect.top + game.player.y * scaleY;
+                const distance = fingerY - paddleY;
+                debug.textContent = "Dedo Y: " + fingerY.toFixed(1)
+                    + "\\nRaqueta Y: " + paddleY.toFixed(1)
+                    + "\\nDistancia: " + distance.toFixed(1) + " px"
+                    + "\\nEscala Y: " + scaleY.toFixed(3)
+                    + "\\nTipo: " + game.input.pointerType;
+            } else {
+                debug.textContent = "Mueve el dedo para medir el offset";
+            }
+            requestAnimationFrame(updateDebug);
+        }
+        requestAnimationFrame(updateDebug);
+
         document.querySelector("[data-action='start']").addEventListener("click", () => {
             startGame();
         });
