@@ -60,10 +60,10 @@
                 const paddleY = rect.top + game.player.y * scaleY;
                 const distance = fingerY - paddleY;
                 debug.textContent = "Dedo Y: " + fingerY.toFixed(1)
-                    + "\\nRaqueta Y: " + paddleY.toFixed(1)
-                    + "\\nDistancia: " + distance.toFixed(1) + " px"
-                    + "\\nEscala Y: " + scaleY.toFixed(3)
-                    + "\\nTipo: " + game.input.pointerType;
+                    + "\nRaqueta Y: " + paddleY.toFixed(1)
+                    + "\nDistancia: " + distance.toFixed(1) + " px"
+                    + "\nEscala Y: " + scaleY.toFixed(3)
+                    + "\nTipo: " + game.input.pointerType;
             } else {
                 debug.textContent = "Mueve el dedo para medir el offset";
             }
