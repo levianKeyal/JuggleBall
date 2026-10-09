@@ -21,6 +21,17 @@
         <button class="demo-button" type="button" data-action="stop">Stop</button>
         <button class="demo-button" type="button" data-action="destroy">Destroy</button>
     </div>
+    <!-- Actualizar el sufijo v en las cuatro rutas al publicar una prueba nueva. -->
+    <script type="importmap">
+    {
+        "imports": {
+            "../src/JuggleBall.js": "../src/JuggleBall.js?v=20261008-1",
+            "../src/input.js": "../src/input.js?v=20261008-1",
+            "../src/player.js": "../src/player.js?v=20261008-1",
+            "../src/ball.js": "../src/ball.js?v=20261008-1"
+        }
+    }
+    </script>
     <script type="module">
         import { JuggleBall } from "../src/JuggleBall.js";
 
