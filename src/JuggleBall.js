@@ -7,7 +7,7 @@ export class JuggleBall {
         this.parent = options.parent || document.body;
         this.zIndex = options.zIndex ?? 2147483000;
         this.className = options.className || "juggle-ball-overlay";
-        this.touchOffsetY = options.touchOffsetY ?? 80;
+        this.touchOffsetY = options.touchOffsetY ?? 120;
 
         this.canvas = null;
         this.context = null;
