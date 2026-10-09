@@ -1,7 +1,7 @@
 ﻿export class Player {
     constructor(input, options = {}) {
         this.input = input;
-        this.touchOffsetY = options.touchOffsetY ?? 150;
+        this.touchOffsetY = options.touchOffsetY ?? 110;
 
         this.x = 0;
         this.y = 0;
