@@ -45,8 +45,9 @@
         }
         // Los eventos reportan posicion; Player conserva el historial del frame.
         this.pointerType = event.pointerType;
-        this.x = event.clientX;
-        this.y = event.clientY;
+        const rect = this.canvas.getBoundingClientRect();
+        this.x = (event.clientX - rect.left) * (this.canvas.width / rect.width);
+        this.y = (event.clientY - rect.top) * (this.canvas.height / rect.height);
         this.active = true;
     }
 
